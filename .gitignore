@@ -1,0 +1,8 @@
+.DS_Store
+*.log
+node_modules/
+Thumbs.db
+# OSS Scripts (contains secrets)
+*oss*.py
+*aliyun*.py
+*access*.py
