@@ -7,6 +7,11 @@ class PixelArt {
     const imagePaths = {
       girlFace: 'img/faces/girl_face.png',
       boyFace: 'img/faces/boy_face.png',
+      gyxDadFace: 'img/faces/gyx_dad.png',
+      gyxMomFace: 'img/faces/gyx_mom.png',
+      teacherFace: 'img/faces/teacher.png',
+      sfwDadFace: 'img/faces/sfw_dad.png',
+      sfwMomFace: 'img/faces/sfw_mom.png',
       classroom: 'img/scenes/classroom.png',
       bedroom: 'img/scenes/bedroom.png',
       nightMarket: 'img/scenes/night_market.png',
@@ -94,10 +99,20 @@ class PixelArt {
 
   static drawFace(ctx, speaker, x, y, size = 100) {
     let faceKey = null;
-    if (speaker === '我' || speaker.includes('昕')) {
+    if (speaker === '我' || speaker.includes('昕') || speaker.includes('女主')) {
       faceKey = 'girlFace';
-    } else if (speaker === '申玮玮' || speaker.includes('玮玮')) {
+    } else if (speaker === '申玮玮' || speaker.includes('玮玮') || speaker.includes('男主')) {
       faceKey = 'boyFace';
+    } else if (speaker.includes('昕宝爸爸') || speaker.includes('昕爸')) {
+      faceKey = 'gyxDadFace';
+    } else if (speaker.includes('昕宝妈妈') || speaker.includes('昕妈')) {
+      faceKey = 'gyxMomFace';
+    } else if (speaker.includes('老师') || speaker.includes('教师')) {
+      faceKey = 'teacherFace';
+    } else if (speaker.includes('申玮玮爸爸') || speaker.includes('申爸')) {
+      faceKey = 'sfwDadFace';
+    } else if (speaker.includes('申玮玮妈妈') || speaker.includes('申妈')) {
+      faceKey = 'sfwMomFace';
     }
 
     if (faceKey && this.images[faceKey]) {
