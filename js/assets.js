@@ -109,9 +109,9 @@ class PixelArt {
       faceKey = 'gyxMomFace';
     } else if (speaker.includes('老师') || speaker.includes('教师')) {
       faceKey = 'teacherFace';
-    } else if (speaker.includes('申玮玮爸爸') || speaker.includes('申爸') || speaker.includes('申爸爸')) {
+    } else if (speaker.includes('申爸') || (speaker.includes('申') && speaker.includes('爸爸'))) {
       faceKey = 'sfwDadFace';
-    } else if (speaker.includes('申玮玮妈妈') || speaker.includes('申妈') || speaker.includes('申妈妈')) {
+    } else if (speaker.includes('申妈') || (speaker.includes('申') && speaker.includes('妈妈'))) {
       faceKey = 'sfwMomFace';
     }
 

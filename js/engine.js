@@ -103,9 +103,9 @@ class GameEngine {
             faceImg = PixelArt.images.gyxMomFace;
         } else if (sp.includes('老师') || sp.includes('教师')) {
             faceImg = PixelArt.images.teacherFace;
-        } else if (sp.includes('申玮玮爸爸') || sp.includes('申爸') || sp.includes('申爸爸')) {
+        } else if (sp.includes('申爸') || (sp.includes('申') && sp.includes('爸爸'))) {
             faceImg = PixelArt.images.sfwDadFace;
-        } else if (sp.includes('申玮玮妈妈') || sp.includes('申妈') || sp.includes('申妈妈')) {
+        } else if (sp.includes('申妈') || (sp.includes('申') && sp.includes('妈妈'))) {
             faceImg = PixelArt.images.sfwMomFace;
         }
         
