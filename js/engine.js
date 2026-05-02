@@ -90,15 +90,28 @@ class GameEngine {
         
         const sp = dialogue.speaker || '';
         let faceImg = null;
-        if (sp === '我' || sp.includes('昕')) {
+        let flipFace = false;
+        
+        if (sp === '我' || sp.includes('昕') || sp.includes('女主')) {
             faceImg = PixelArt.images.girlFace;
-        } else if (sp === '申玮玮' || sp.includes('玮玮')) {
+        } else if (sp === '申玮玮' || sp.includes('玮玮') || sp.includes('男主')) {
             faceImg = PixelArt.images.boyFace;
+            flipFace = true;
+        } else if (sp.includes('昕宝爸爸') || sp === '昕爸' || (sp.includes('爸爸') && !sp.includes('申'))) {
+            faceImg = PixelArt.images.gyxDadFace;
+        } else if (sp.includes('昕宝妈妈') || sp === '昕妈' || (sp.includes('妈妈') && !sp.includes('申'))) {
+            faceImg = PixelArt.images.gyxMomFace;
+        } else if (sp.includes('老师') || sp.includes('教师')) {
+            faceImg = PixelArt.images.teacherFace;
+        } else if (sp.includes('申玮玮爸爸') || sp.includes('申爸') || sp.includes('申爸爸')) {
+            faceImg = PixelArt.images.sfwDadFace;
+        } else if (sp.includes('申玮玮妈妈') || sp.includes('申妈') || sp.includes('申妈妈')) {
+            faceImg = PixelArt.images.sfwMomFace;
         }
         
         faceCtx.clearRect(0, 0, 144, 144);
         if (faceImg) {
-          if (sp === '申玮玮' || sp.includes('玮玮')) {
+          if (flipFace) {
             faceCtx.save();
             faceCtx.translate(144, 0);
             faceCtx.scale(-1, 1);
