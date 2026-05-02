@@ -714,7 +714,7 @@ class Chapters {
                         { speaker: '旁白', text: '你们之间，还会发生很多很多的事，经历很多很多的考验。' },
                         { speaker: '旁白', text: '但我相信，你们也会体验很多很多的幸福。' },
                         { speaker: '旁白', text: '要一辈子幸福下去啊！🌸' },
-                        { speaker: '全剧终', text: '从校服到西装，从校草到老公，这六年，是我收到最珍贵的礼物。' }
+                        { speaker: '全剧终', text: '从校服到婚纱，从同学到恋人，这六年，是我收到最珍贵的礼物。' }
                     ],
                     render(ctx) {
                         PixelArt.drawRomanticEnding(ctx);
