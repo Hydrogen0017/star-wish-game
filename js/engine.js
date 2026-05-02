@@ -233,4 +233,26 @@ class GameEngine {
             this.gameState.unlockedGallery.push(item);
         }
     }
+    
+    showEndingVideo() {
+        const endingScreen = document.getElementById('ending-screen');
+        const endingVideo = document.getElementById('ending-video');
+        if (endingScreen && endingVideo) {
+            endingScreen.classList.remove('hidden');
+            endingVideo.currentTime = 0;
+            endingVideo.muted = true;
+            endingVideo.play().catch(() => {
+                console.log('Ending video play failed, continuing anyway');
+            });
+        }
+    }
+    
+    hideEndingVideo() {
+        const endingScreen = document.getElementById('ending-screen');
+        const endingVideo = document.getElementById('ending-video');
+        if (endingScreen && endingVideo) {
+            endingVideo.pause();
+            endingScreen.classList.add('hidden');
+        }
+    }
 }
