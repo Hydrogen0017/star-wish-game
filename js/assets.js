@@ -103,15 +103,15 @@ class PixelArt {
       faceKey = 'girlFace';
     } else if (speaker === '申玮玮' || speaker.includes('玮玮') || speaker.includes('男主')) {
       faceKey = 'boyFace';
-    } else if (speaker.includes('昕宝爸爸') || speaker.includes('昕爸')) {
+    } else if (speaker.includes('昕宝爸爸') || speaker === '昕爸' || (speaker.includes('爸爸') && !speaker.includes('申'))) {
       faceKey = 'gyxDadFace';
-    } else if (speaker.includes('昕宝妈妈') || speaker.includes('昕妈')) {
+    } else if (speaker.includes('昕宝妈妈') || speaker === '昕妈' || (speaker.includes('妈妈') && !speaker.includes('申'))) {
       faceKey = 'gyxMomFace';
     } else if (speaker.includes('老师') || speaker.includes('教师')) {
       faceKey = 'teacherFace';
-    } else if (speaker.includes('申玮玮爸爸') || speaker.includes('申爸')) {
+    } else if (speaker.includes('申玮玮爸爸') || speaker.includes('申爸') || speaker.includes('申爸爸')) {
       faceKey = 'sfwDadFace';
-    } else if (speaker.includes('申玮玮妈妈') || speaker.includes('申妈')) {
+    } else if (speaker.includes('申玮玮妈妈') || speaker.includes('申妈') || speaker.includes('申妈妈')) {
       faceKey = 'sfwMomFace';
     }
 
