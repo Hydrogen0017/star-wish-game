@@ -74,6 +74,34 @@ class GameEngine {
         }
     }
     
+    getFaceForSpeaker(speaker) {
+        const sp = speaker || '';
+        
+        if (sp === '我' || sp.includes('昕') || sp.includes('女主')) {
+            return { img: PixelArt.images.girlFace, flip: false };
+        }
+        if (sp === '申玮玮' || sp.includes('玮玮') || sp.includes('男主')) {
+            return { img: PixelArt.images.boyFace, flip: true };
+        }
+        if (sp.includes('老师') || sp.includes('教师')) {
+            return { img: PixelArt.images.teacherFace, flip: false };
+        }
+        if (sp.includes('申爸') || (sp.includes('申') && sp.includes('爸爸'))) {
+            return { img: PixelArt.images.sfwDadFace, flip: false };
+        }
+        if (sp.includes('申妈') || (sp.includes('申') && sp.includes('妈妈'))) {
+            return { img: PixelArt.images.sfwMomFace, flip: false };
+        }
+        if (sp.includes('昕宝爸爸') || sp === '昕爸' || (sp.includes('爸爸') && sp.includes('昕'))) {
+            return { img: PixelArt.images.gyxDadFace, flip: false };
+        }
+        if (sp.includes('昕宝妈妈') || sp === '昕妈' || (sp.includes('妈妈') && sp.includes('昕'))) {
+            return { img: PixelArt.images.gyxMomFace, flip: false };
+        }
+        
+        return { img: null, flip: false };
+    }
+    
     showDialogue() {
         this.isDialogueActive = true;
         const dialogueBox = document.getElementById('dialogue-box');
@@ -88,37 +116,18 @@ class GameEngine {
         speaker.textContent = dialogue.speaker || '';
         text.textContent = dialogue.text;
         
-        const sp = dialogue.speaker || '';
-        let faceImg = null;
-        let flipFace = false;
-        
-        if (sp === '我' || sp.includes('昕') || sp.includes('女主')) {
-            faceImg = PixelArt.images.girlFace;
-        } else if (sp === '申玮玮' || sp.includes('玮玮') || sp.includes('男主')) {
-            faceImg = PixelArt.images.boyFace;
-            flipFace = true;
-        } else if (sp.includes('昕宝爸爸') || sp === '昕爸' || (sp.includes('爸爸') && !sp.includes('申'))) {
-            faceImg = PixelArt.images.gyxDadFace;
-        } else if (sp.includes('昕宝妈妈') || sp === '昕妈' || (sp.includes('妈妈') && !sp.includes('申'))) {
-            faceImg = PixelArt.images.gyxMomFace;
-        } else if (sp.includes('老师') || sp.includes('教师')) {
-            faceImg = PixelArt.images.teacherFace;
-        } else if (sp.includes('申爸') || (sp.includes('申') && sp.includes('爸爸'))) {
-            faceImg = PixelArt.images.sfwDadFace;
-        } else if (sp.includes('申妈') || (sp.includes('申') && sp.includes('妈妈'))) {
-            faceImg = PixelArt.images.sfwMomFace;
-        }
+        const faceData = this.getFaceForSpeaker(dialogue.speaker);
         
         faceCtx.clearRect(0, 0, 144, 144);
-        if (faceImg) {
-          if (flipFace) {
+        if (faceData.img) {
+          if (faceData.flip) {
             faceCtx.save();
             faceCtx.translate(144, 0);
             faceCtx.scale(-1, 1);
-            faceCtx.drawImage(faceImg, 0, 0, 144, 144, 0, 0, 144, 144);
+            faceCtx.drawImage(faceData.img, 0, 0, 144, 144, 0, 0, 144, 144);
             faceCtx.restore();
           } else {
-            faceCtx.drawImage(faceImg, 0, 0, 144, 144, 0, 0, 144, 144);
+            faceCtx.drawImage(faceData.img, 0, 0, 144, 144, 0, 0, 144, 144);
           }
           faceContainer.style.display = 'flex';
         } else {
