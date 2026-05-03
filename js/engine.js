@@ -22,9 +22,14 @@ class GameEngine {
         this.lastTime = 0;
         
         this.setupEventListeners();
+        this.handleResize();
     }
     
     setupEventListeners() {
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
+        
         window.addEventListener('keydown', (e) => {
             this.keys[e.key] = true;
             if (e.key === 'Escape') {
@@ -254,5 +259,21 @@ class GameEngine {
             endingVideo.pause();
             endingScreen.classList.add('hidden');
         }
+    }
+    
+    handleResize() {
+        const container = document.getElementById('game-container');
+        const maxWidth = window.innerWidth - 32;
+        const maxHeight = window.innerHeight - 32;
+        
+        let scale = Math.min(maxWidth / 960, maxHeight / 640);
+        if (scale > 1) scale = 1;
+        
+        const newWidth = 960 * scale;
+        const newHeight = 640 * scale;
+        
+        container.style.width = newWidth + 'px';
+        container.style.height = newHeight + 'px';
+        container.style.borderWidth = (8 * scale) + 'px';
     }
 }

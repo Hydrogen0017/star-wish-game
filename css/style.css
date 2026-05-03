@@ -18,6 +18,9 @@ body {
     position: relative;
     width: 960px;
     height: 640px;
+    max-width: 100vw;
+    max-height: 100vh;
+    aspect-ratio: 3 / 2;
     background: #1a1a2e;
     border: 8px solid #8b4513;
     border-radius: 8px;
@@ -27,6 +30,8 @@ body {
 
 #game-canvas {
     display: block;
+    width: 100%;
+    height: 100%;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 }
@@ -81,6 +86,56 @@ body {
     font-size: 16px;
     line-height: 1.8;
     color: #f0f0f0;
+}
+
+@media (max-width: 1024px) {
+    #dialogue-face-container {
+        width: 100px;
+        min-width: 100px;
+        height: 140px;
+    }
+    
+    #dialogue-face-container canvas {
+        width: 90px;
+        height: 90px;
+    }
+    
+    #dialogue-speaker {
+        font-size: 16px;
+    }
+    
+    #dialogue-text {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    #game-container {
+        border-width: 4px;
+    }
+    
+    #dialogue-face-container {
+        width: 80px;
+        min-width: 80px;
+        height: 120px;
+    }
+    
+    #dialogue-face-container canvas {
+        width: 70px;
+        height: 70px;
+    }
+    
+    #dialogue-content {
+        padding: 10px 15px;
+    }
+    
+    #dialogue-speaker {
+        font-size: 14px;
+    }
+    
+    #dialogue-text {
+        font-size: 13px;
+    }
 }
 
 #dialogue-buttons {
@@ -203,6 +258,25 @@ body {
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s;
+}
+
+@media (max-width: 1024px) {
+    .menu-box {
+        min-width: 300px;
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-box {
+        min-width: 280px;
+        padding: 20px;
+    }
+    
+    .menu-box button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
 }
 
 .menu-box button:hover {
