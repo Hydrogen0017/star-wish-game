@@ -21,10 +21,9 @@ jobs:
     - name: Download Retinbox CLI
       run: |
         curl -fSL https://host.retiehe.com/cli -o retinbox-cli
-        chmod +x retinbox-cli
-    
+
     - name: Deploy to Retinbox
       env:
         RTH_API_KEY: ${{ secrets.RTH_API_KEY }}
       run: |
-        ./retinbox-cli deploy --site hydrogen0017 --outdir .
+        node retinbox-cli deploy --site hydrogen0017 --outdir .
