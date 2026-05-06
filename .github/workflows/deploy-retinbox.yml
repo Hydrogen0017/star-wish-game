@@ -1,0 +1,30 @@
+name: Deploy to Retinbox
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    
+    - name: Download Retinbox CLI
+      run: |
+        curl -fSL https://host.retiehe.com/cli -o retinbox-cli
+        chmod +x retinbox-cli
+    
+    - name: Deploy to Retinbox
+      env:
+        RTH_API_KEY: ${{ secrets.RTH_API_KEY }}
+      run: |
+        ./retinbox-cli deploy --site hydrogen0017 --outdir .
