@@ -3,3 +3,4 @@
 test/
 rpg2-game.zip
 *.zip
+.DS_Store
