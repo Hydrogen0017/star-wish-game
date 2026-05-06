@@ -717,12 +717,7 @@ class Chapters {
                         { speaker: '全剧终', text: '从校服到婚纱，从同学到恋人，这六年，是我收到最珍贵的礼物。' }
                     ],
                     render(ctx) {
-                        // 这里仍然绘制简单的背景，在最后对话结束后才显示视频
-                        const gradient = ctx.createLinearGradient(0, 0, 0, 640);
-                        gradient.addColorStop(0, '#1a1a2e');
-                        gradient.addColorStop(1, '#16213e');
-                        ctx.fillStyle = gradient;
-                        ctx.fillRect(0, 0, 960, 640);
+                        PixelArt.drawRomanticEnding(ctx);
                     },
                     onComplete() {
                         game.unlockGalleryItem(43);
