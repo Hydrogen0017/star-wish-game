@@ -26,4 +26,4 @@ jobs:
       env:
         RTH_API_KEY: ${{ secrets.RTH_API_KEY }}
       run: |
-        node retinbox-cli deploy --site hydrogen0017 --outdir .
+        node retinbox-cli --site hydrogen0017 --outdir .
