@@ -58,14 +58,6 @@ class GameEngine {
                 this.previousDialogue();
             });
         }
-        
-        const photoWallCloseBtn = document.getElementById('photo-wall-close');
-        if (photoWallCloseBtn) {
-            photoWallCloseBtn.addEventListener('click', () => {
-                this.hidePhotoWall();
-                this.hideEndingVideo();
-            });
-        }
     }
     
     toggleMenu() {
@@ -253,20 +245,10 @@ class GameEngine {
         if (endingScreen && endingVideo) {
             endingScreen.classList.remove('hidden');
             endingVideo.currentTime = 0;
-            endingVideo.muted = false;
-            
-            const playPromise = endingVideo.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    setTimeout(() => {
-                        this.showPhotoWall();
-                    }, 3000);
-                }).catch(() => {
-                    this.showPhotoWall();
-                });
-            } else {
-                this.showPhotoWall();
-            }
+            endingVideo.muted = true;
+            endingVideo.play().catch(() => {
+                console.log('Ending video play failed, continuing anyway');
+            });
         }
     }
     
@@ -276,84 +258,6 @@ class GameEngine {
         if (endingScreen && endingVideo) {
             endingVideo.pause();
             endingScreen.classList.add('hidden');
-        }
-    }
-    
-    showPhotoWall() {
-        const photoWall = document.getElementById('photo-wall');
-        const container = document.getElementById('photo-wall-container');
-        
-        if (!photoWall || !container) return;
-        
-        container.innerHTML = '';
-        
-        const photos = [
-            { renderer: (ctx) => PixelArt.drawClassroom(ctx), caption: '初中的教室' },
-            { renderer: (ctx) => PixelArt.drawSummerRoom(ctx), caption: '暑假的午后' },
-            { renderer: (ctx) => PixelArt.drawNightMarket(ctx), caption: '热闹的夜市' },
-            { renderer: (ctx) => PixelArt.drawHighSchool(ctx), caption: '高中校园' },
-            { renderer: (ctx) => PixelArt.drawUniversity(ctx), caption: '大学校园' },
-            { renderer: (ctx) => PixelArt.drawPark(ctx), caption: '公园告白' },
-            { renderer: (ctx) => PixelArt.drawSuzhou(ctx), caption: '苏州园林' },
-            { renderer: (ctx) => PixelArt.drawXuanwuLake(ctx), caption: '玄武湖求婚' },
-            { renderer: (ctx) => PixelArt.drawHome(ctx, true), caption: '见他的父母' },
-            { renderer: (ctx) => PixelArt.drawRomanticEnding(ctx), caption: '永远幸福' }
-        ];
-        
-        photos.forEach((photo, index) => {
-            const photoDiv = document.createElement('div');
-            photoDiv.className = 'photo-wall-photo';
-            
-            const x = 30 + (index % 5) * 190;
-            const y = 80 + Math.floor(index / 5) * 280;
-            const rotation = (index % 3 - 1) * 5;
-            
-            photoDiv.style.left = x + 'px';
-            photoDiv.style.top = y + 'px';
-            photoDiv.style.transform = `rotate(${rotation}deg)`;
-            
-            const imgCanvas = document.createElement('canvas');
-            imgCanvas.width = 240;
-            imgCanvas.height = 160;
-            const imgCtx = imgCanvas.getContext('2d');
-            imgCtx.fillStyle = '#1a1a2e';
-            imgCtx.fillRect(0, 0, 240, 160);
-            
-            if (photo.renderer) {
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = 960;
-                tempCanvas.height = 640;
-                const tempCtx = tempCanvas.getContext('2d');
-                photo.renderer(tempCtx);
-                imgCtx.drawImage(tempCanvas, 0, 0, 960, 640, 0, 0, 240, 160);
-            }
-            
-            const caption = document.createElement('div');
-            caption.className = 'photo-wall-caption';
-            caption.textContent = photo.caption || '';
-            
-            photoDiv.appendChild(imgCanvas);
-            photoDiv.appendChild(caption);
-            container.appendChild(photoDiv);
-            
-            setTimeout(() => {
-                photoDiv.classList.add('visible');
-            }, 1500 * (index + 1));
-        });
-        
-        photoWall.classList.remove('hidden');
-        setTimeout(() => {
-            photoWall.classList.add('visible');
-        }, 100);
-    }
-    
-    hidePhotoWall() {
-        const photoWall = document.getElementById('photo-wall');
-        if (photoWall) {
-            photoWall.classList.remove('visible');
-            setTimeout(() => {
-                photoWall.classList.add('hidden');
-            }, 500);
         }
     }
     
