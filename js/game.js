@@ -26,13 +26,9 @@ class Game {
         this.currentChapterIndex = 0;
         this.currentSceneIndex = 0;
         this.engine.gameState.currentChapter = 1;
-        
-        const bgm = document.getElementById('bgm');
-        bgm.volume = 0.3;
-        bgm.play().catch(() => {});
-        
+
         await PixelArt.loadImages();
-        
+
         this.playScene();
         this.engine.start();
     }
