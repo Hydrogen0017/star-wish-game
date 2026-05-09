@@ -721,7 +721,7 @@ class Chapters {
                     },
                     onComplete() {
                         game.unlockGalleryItem(43);
-                        game.engine.showEndingVideo();
+                        window.game.engine.showEndingVideo();
                     }
                 }
             ]
