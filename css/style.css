@@ -382,6 +382,6 @@ body {
 }
 
 #ending-link:hover {
-    transform: translateX(-50%) scale(1.05);
+    transform: translateX(-50%) scale(1.08);
     box-shadow: 0 6px 20px rgba(233, 30, 99, 0.6);
 }
