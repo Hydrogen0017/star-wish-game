@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时光相册 - 照片墙</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #0a0a0a;
+            font-family: 'ZCOOL XiaoWei', 'Ma Shan Zheng', serif;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .video-background video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(10, 10, 20, 0.4) 0%,
+                rgba(30, 20, 50, 0.3) 50%,
+                rgba(20, 30, 50, 0.4) 100%
+            );
+            z-index: 0;
+        }
+
+        .photo-wall {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .floating-photo {
+            position: absolute;
+            background: white;
+            padding: 8px;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(255, 255, 255, 0.1);
+            transform-origin: center center;
+            opacity: 0;
+            animation: floatDown linear infinite;
+            overflow: hidden;
+        }
+
+        .floating-photo img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .floating-photo::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 50%, #d4af37 100%);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        @keyframes floatDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-300px) rotate(0deg);
+            }
+            5% {
+                opacity: 1;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(calc(100vh + 400px)) rotate(var(--end-rotation));
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+
+        .title-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 50;
+            pointer-events: none;
+            animation: fadeIn 2s ease forwards;
+        }
+
+        .title {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.5),
+                0 0 40px rgba(212, 175, 55, 0.3),
+                2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.5em;
+            margin-bottom: 20px;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at center,
+                transparent 0%,
+                transparent 60%,
+                rgba(0, 0, 0, 0.4) 100%
+            );
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: particleFloat linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .start-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+        }
+
+        .start-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .start-btn {
+            padding: 20px 60px;
+            font-size: 1.5rem;
+            font-family: 'Ma Shan Zheng', serif;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(212, 175, 55, 0.1) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            color: white;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.2em;
+        }
+
+        .start-btn:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.5) 0%, rgba(212, 175, 55, 0.2) 100%);
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .floating-photo {
+                padding: 4px;
+            }
+            
+            .start-btn {
+                padding: 15px 40px;
+                font-size: 1.2rem;
+            }
+            
+            .floating-photo::before {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .floating-photo {
+                max-height: 180px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .floating-photo {
+                padding: 6px;
+            }
+            
+            .floating-photo::before {
+                width: 25px;
+                height: 25px;
+            }
+            
+            .floating-photo {
+                max-height: 250px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 600px) {
+            .floating-photo {
+                max-width: 120px;
+                max-height: 90px;
+            }
+            
+            .start-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .floating-photo {
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="start-overlay" id="startOverlay">
+        <button class="start-btn" onclick="startExperience()">进入时光相册</button>
+    </div>
+
+    <div class="video-background">
+        <video id="bgVideo1" muted playsinline>
+            <source src="end_video.mp4" type="video/mp4">
+        </video>
+        <video id="bgVideo2" muted playsinline style="opacity: 0;">
+            <source src="end_video.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video-overlay"></div>
+    <div class="vignette"></div>
+
+    <div class="photo-wall" id="photoWall"></div>
+    
+    <div class="particles" id="particles"></div>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="music/bgm.m4a" type="audio/mp4">
+    </audio>
+
+    <script>
+        const photos = [
+            '参考图像/时光相册/1.jpg',
+            '参考图像/时光相册/2.jpg',
+            '参考图像/时光相册/3.jpg',
+            '参考图像/时光相册/4.jpg',
+            '参考图像/时光相册/5.jpg',
+            '参考图像/时光相册/6.jpg',
+            '参考图像/时光相册/7.jpg',
+            '参考图像/时光相册/8.jpg',
+            '参考图像/时光相册/9.jpg',
+            '参考图像/时光相册/10.jpg',
+            '参考图像/时光相册/11.jpg',
+            '参考图像/时光相册/12.jpg',
+            '参考图像/时光相册/13.jpg',
+            '参考图像/时光相册/14.jpg',
+            '参考图像/时光相册/15.jpg',
+            '参考图像/时光相册/16.jpg',
+            '参考图像/时光相册/17.jpg',
+            '参考图像/时光相册/18.jpg',
+            '参考图像/时光相册/19.jpg'
+        ];
+
+        let isPlaying = false;
+        let photoCount = 0;
+        let currentPhotoIndex = 0;
+        let activePhotoIndices = new Set();
+        let columnCount = 4;
+        let activePhotos = [];
+        let baseColumnSpeed = {};
+        
+        const photosConfig = {
+            minSpeed: 30,
+            maxSpeed: 50,
+            speedVariation: 8,
+            columnOffsetRange: 0.4,
+            framePadding: 8
+        };
+
+        function getDeviceConfig() {
+            const width = window.innerWidth;
+            if (width < 768) {
+                return { columns: 3 };
+            } else {
+                return { columns: 4 };
+            }
+        }
+
+        function getNextAvailablePhoto() {
+            const totalPhotos = photos.length;
+            if (activePhotoIndices.size >= totalPhotos) {
+                activePhotoIndices.clear();
+            }
+            
+            let attempts = 0;
+            while (attempts < totalPhotos * 2) {
+                const idx = currentPhotoIndex % totalPhotos;
+                currentPhotoIndex++;
+                if (currentPhotoIndex >= totalPhotos * 2) {
+                    currentPhotoIndex = 0;
+                    activePhotoIndices.clear();
+                }
+                if (!activePhotoIndices.has(idx)) {
+                    activePhotoIndices.add(idx);
+                    return idx;
+                }
+                attempts++;
+            }
+            return currentPhotoIndex % totalPhotos;
+        }
+
+        function initColumnSpeeds() {
+            const config = getDeviceConfig();
+            columnCount = config.columns;
+            for (let col = 0; col < columnCount; col++) {
+                baseColumnSpeed[col] = photosConfig.minSpeed + 
+                    Math.random() * (photosConfig.maxSpeed - photosConfig.minSpeed);
+            }
+        }
+
+        function getColumnSpeed(column) {
+            return baseColumnSpeed[column] + 
+                (Math.random() - 0.5) * photosConfig.speedVariation * 2;
+        }
+
+        function checkOverlap(x, y, width, height) {
+            const padding = 10;
+            for (const p of activePhotos) {
+                const overlapX = x < p.x + p.width + padding && x + width + padding > p.x;
+                const overlapY = y < p.y + p.height + padding && y + height + padding > p.y;
+                if (overlapX && overlapY) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function createFloatingPhoto() {
+            const config = getDeviceConfig();
+            columnCount = config.columns;
+            
+            if (photoCount >= columnCount * 3) return;
+
+            const photoIdx = getNextAvailablePhoto();
+            const photo = document.createElement('div');
+            photo.className = 'floating-photo';
+            
+            const img = document.createElement('img');
+            img.src = photos[photoIdx];
+            img.alt = '时光照片';
+            img.onload = () => {
+                const naturalWidth = img.naturalWidth;
+                const naturalHeight = img.naturalHeight;
+                const aspectRatio = naturalHeight / naturalWidth;
+                const baseWidth = (window.innerWidth / columnCount) * 0.5;
+                const displayWidth = baseWidth + (Math.random() - 0.5) * baseWidth * 0.3;
+                const displayHeight = displayWidth * aspectRatio;
+                
+                const columnWidth = window.innerWidth / columnCount;
+                let placed = false;
+                let startX, startY, column;
+                let attempts = 0;
+                const maxAttempts = 30;
+                
+                while (!placed && attempts < maxAttempts) {
+                    column = Math.floor(Math.random() * columnCount);
+                    const columnCenter = (column + 0.5) * columnWidth;
+                    const maxOffset = columnWidth * photosConfig.columnOffsetRange;
+                    const randomOffset = (Math.random() - 0.5) * 2 * maxOffset;
+                    startX = columnCenter + randomOffset - displayWidth / 2;
+                    startX = Math.max(0, Math.min(startX, window.innerWidth - displayWidth));
+                    startY = -displayHeight - Math.random() * 300;
+                    
+                    if (!checkOverlap(startX, startY, displayWidth, displayHeight)) {
+                        placed = true;
+                    }
+                    attempts++;
+                }
+                
+                if (!placed) {
+                    column = Math.floor(Math.random() * columnCount);
+                    const columnCenter = (column + 0.5) * columnWidth;
+                    const maxOffset = columnWidth * photosConfig.columnOffsetRange;
+                    const randomOffset = (Math.random() - 0.5) * 2 * maxOffset;
+                    startX = columnCenter + randomOffset - displayWidth / 2;
+                    startX = Math.max(0, Math.min(startX, window.innerWidth - displayWidth));
+                    startY = -displayHeight - Math.random() * 300;
+                }
+                
+                photo.style.width = displayWidth + 'px';
+                photo.style.left = startX + 'px';
+                photo.style.top = startY + 'px';
+                
+                const duration = getColumnSpeed(column);
+                const rotation = (Math.random() - 0.5) * 25;
+                const endRotation = rotation + (Math.random() - 0.5) * 15;
+                photo.style.setProperty('--end-rotation', endRotation + 'deg');
+                photo.style.animationDuration = duration + 's';
+                
+                document.getElementById('photoWall').appendChild(photo);
+                photoCount++;
+                
+                activePhotos.push({
+                    x: startX,
+                    y: startY,
+                    width: displayWidth,
+                    height: displayHeight,
+                    element: photo
+                });
+                
+                photo.addEventListener('animationend', () => {
+                    photo.remove();
+                    photoCount--;
+                    activePhotoIndices.delete(photoIdx);
+                    activePhotos = activePhotos.filter(p => p.element !== photo);
+                });
+            };
+            
+            photo.dataset.photoIdx = photoIdx;
+            photo.appendChild(img);
+        }
+
+        function startPhotoLoop() {
+            if (photoCount < columnCount * 3) {
+                createFloatingPhoto();
+            }
+            const interval = 2000 + Math.random() * 1500;
+            setTimeout(startPhotoLoop, interval);
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            container.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.cssText = `
+                    left: ${Math.random() * 100}%;
+                    animation-duration: ${Math.random() * 10 + 10}s;
+                    animation-delay: ${Math.random() * 5}s;
+                    opacity: ${Math.random() * 0.5 + 0.3};
+                    width: ${Math.random() * 3 + 2}px;
+                    height: ${Math.random() * 3 + 2}px;
+                `;
+                container.appendChild(particle);
+            }
+        }
+
+        function startExperience() {
+            document.getElementById('startOverlay').classList.add('hidden');
+            
+            const audio = document.getElementById('bgMusic');
+            audio.play().catch(e => console.log('Audio autoplay blocked:', e));
+            
+            const video1 = document.getElementById('bgVideo1');
+            const video2 = document.getElementById('bgVideo2');
+            
+            video1.style.opacity = '1';
+            video2.style.opacity = '0';
+            video2.currentTime = 0;
+            
+            let playingForward = true;
+            
+            function playForward() {
+                video1.currentTime = 0;
+                video1.playbackRate = 1;
+                video1.play();
+            }
+            
+            function playBackward() {
+                video2.currentTime = video2.duration;
+                video2.playbackRate = -1;
+                video2.play();
+            }
+            
+            video1.addEventListener('ended', () => {
+                if (playingForward) {
+                    playingForward = false;
+                    playBackward();
+                }
+            });
+            
+            video2.addEventListener('ended', () => {
+                if (!playingForward) {
+                    playingForward = true;
+                    playForward();
+                }
+            });
+            
+            playForward();
+            
+            initColumnSpeeds();
+            
+            for (let i = 0; i < columnCount * 2; i++) {
+                setTimeout(createFloatingPhoto, i * 400);
+            }
+            
+            startPhotoLoop();
+        }
+
+        window.addEventListener('resize', () => {
+            const newConfig = getDeviceConfig();
+            columnCount = newConfig.columns;
+            photosConfig.minSize = newConfig.minSize;
+            photosConfig.maxSize = newConfig.maxSize;
+        });
+
+        createParticles();
+    </script>
+</body>
+</html>

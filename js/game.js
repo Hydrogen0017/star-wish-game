@@ -1,5 +1,6 @@
 class Game {
     constructor() {
+        window.game = this;
         this.engine = new GameEngine();
         this.chapters = Chapters.getAllChapters(this.engine);
         this.galleryItems = Gallery.getItems();
